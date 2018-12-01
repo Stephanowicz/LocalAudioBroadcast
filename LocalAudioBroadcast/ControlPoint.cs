@@ -255,8 +255,15 @@ namespace LocalAudioBroadcast {
                 new UPnPArgument("CurrentURI", defaultItem.Uri),
                 new UPnPArgument("CurrentURIMetaData", defaultItem.GetDidl())
             };
-
-            service.InvokeSync("SetAVTransportURI", args);
+            try
+            {
+                service.InvokeSync("SetAVTransportURI", args);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ControlPoint - SetAVTransportURI: " + ex.Message);
+                //throw;
+            }
         }
 
         public void Playback() {

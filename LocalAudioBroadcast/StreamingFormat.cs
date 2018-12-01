@@ -20,9 +20,10 @@ namespace LocalAudioBroadcast {
 
         public static StreamingFormat LPCM = new LPCMFormat();
         public static StreamingFormat WAV = new WAVFormat();
+        public static StreamingFormat PCM = new PCMFormat();
 
-        private static StreamingFormat[] formats = { LPCM, WAV };
-        private static StreamingFormat defaultFormat = LPCM;
+        private static StreamingFormat[] formats = { LPCM, WAV, PCM };
+        private static StreamingFormat defaultFormat = PCM;
 
         public abstract string Id { get; }
 
@@ -65,16 +66,38 @@ namespace LocalAudioBroadcast {
             }
 
             public override string GetFormatDescriptor(int sampleRate, int channels) {
-                return "audio/L16;rate=" + sampleRate + ";channels=" + channels;
+               return "audio/l16;rate=" + sampleRate + ";channels=" + channels;
             }
 
             public override string GetNetworkFormatDescriptor(int sampleRate, int channels) {
-                return "http-get:*:" + GetFormatDescriptor(sampleRate, channels) + ":DLNA.ORG_PN=LPCM";
-                
+                return "http-get:*:" + GetFormatDescriptor(sampleRate, channels) + ":DLNA.ORG_PN=LPCM";                
             }
 
             public override bool BigEndian { 
                 get { return true; }
+            }
+        }
+        class PCMFormat : StreamingFormat {
+
+            public override string Id {
+                get { return "pcm"; }
+            }
+
+            public override string Name {
+                get { return "PCM"; }
+            }
+
+            public override string GetFormatDescriptor(int sampleRate, int channels) {
+               return "audio/l16;rate=" + sampleRate + ";channels=" + channels;
+            }
+
+            public override string GetNetworkFormatDescriptor(int sampleRate, int channels) {
+                return "http-get:*:audio/x-wav:*";
+                
+            }
+
+            public override bool BigEndian { 
+                get { return false; }
             }
         }
 

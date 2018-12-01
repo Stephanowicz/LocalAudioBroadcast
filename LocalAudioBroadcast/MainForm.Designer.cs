@@ -35,6 +35,7 @@
             this.btnRefreshRenderers = new System.Windows.Forms.Button();
             this.btnAbout = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.rbFormatPCM = new System.Windows.Forms.RadioButton();
             this.rbFormatWAV = new System.Windows.Forms.RadioButton();
             this.rbFormatLPCM = new System.Windows.Forms.RadioButton();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
@@ -144,6 +145,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.rbFormatPCM);
             this.groupBox1.Controls.Add(this.rbFormatWAV);
             this.groupBox1.Controls.Add(this.rbFormatLPCM);
             this.groupBox1.Location = new System.Drawing.Point(12, 96);
@@ -152,6 +154,21 @@
             this.groupBox1.TabIndex = 14;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Streaming Format";
+            // 
+            // rbFormatPCM
+            // 
+            this.rbFormatPCM.AutoSize = true;
+            this.rbFormatPCM.Location = new System.Drawing.Point(122, 15);
+            this.rbFormatPCM.Name = "rbFormatPCM";
+            this.rbFormatPCM.Size = new System.Drawing.Size(78, 17);
+            this.rbFormatPCM.TabIndex = 2;
+            this.rbFormatPCM.TabStop = true;
+            this.rbFormatPCM.Tag = "pcm";
+            this.rbFormatPCM.Text = "WAV/PCM";
+            this.toolTip1.SetToolTip(this.rbFormatPCM, "Use if LPCM is not supported by the target renderer. Can only stream for a limite" +
+        "d time, due to the length restriction of the wav header.");
+            this.rbFormatPCM.UseVisualStyleBackColor = true;
+            this.rbFormatPCM.CheckedChanged += new System.EventHandler(this.rbFormat_CheckedChanged);
             // 
             // rbFormatWAV
             // 
@@ -223,6 +240,7 @@
         private System.Windows.Forms.RadioButton rbFormatWAV;
         private System.Windows.Forms.RadioButton rbFormatLPCM;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.RadioButton rbFormatPCM;
     }
 }
 

@@ -50,7 +50,7 @@ namespace LocalAudioBroadcast {
                 format = StreamingFormat.DefaultFormat;
             }
 
-            foreach(RadioButton rb in new[] { rbFormatLPCM, rbFormatWAV }) {
+            foreach(RadioButton rb in new[] { rbFormatLPCM, rbFormatWAV, rbFormatPCM }) {
                 if (rb.Tag.ToString() == format.Id) {
                     rb.Checked = true;
                     break;
@@ -175,6 +175,8 @@ namespace LocalAudioBroadcast {
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e) {
+            if(lab.ControlPoint != null)
+                lab.ControlPoint.Stop();
             lab.Stop();
             Application.Exit();
         }
