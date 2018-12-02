@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Text;
 using OpenSource.UPnP;
 using System.Web;
+using System.Windows.Forms;
 
 namespace LocalAudioBroadcast {
     class ControlPoint {
@@ -149,8 +150,8 @@ namespace LocalAudioBroadcast {
             SetMute(!GetMute());
         }
 
-        public void Play() {
-            if (device == null) return;
+        public bool Play() {
+            if (device == null) return false;
             var service = device.GetServices(UPNP_SERVICE_AVTRANSPORT)[0];
 
             UPnPArgument[] args = new UPnPArgument[] {
@@ -158,7 +159,20 @@ namespace LocalAudioBroadcast {
                 new UPnPArgument("Speed", "1")
             };
 
-            service.InvokeSync("Play", args);
+            try
+            {
+                service.InvokeSync("Play", args);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ControlPoint - Play: " + ex.Message);
+                Console.WriteLine("UPNP exception: " + ((OpenSource.UPnP.UPnPInvokeException)ex).UPNP.ErrorDescription);
+                MessageBox.Show(((OpenSource.UPnP.UPnPInvokeException)ex).UPNP.ErrorDescription, ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+
         }
 
         public void Pause() {
@@ -183,8 +197,8 @@ namespace LocalAudioBroadcast {
             service.InvokeSync("Stop", args);
         }
 
-        public void SetAVTransportURI() {
-            if (device == null) return;
+        public bool SetAVTransportURI() {
+            if (device == null) return false;
             var service = device.GetServices(UPNP_SERVICE_AVTRANSPORT)[0];
 
             /*
@@ -258,17 +272,22 @@ namespace LocalAudioBroadcast {
             try
             {
                 service.InvokeSync("SetAVTransportURI", args);
+                return true;
             }
             catch (Exception ex)
             {
-                Console.WriteLine("ControlPoint - SetAVTransportURI: " + ex.Message);
-                //throw;
+                Console.WriteLine("ControlPoint - SetAVTransportURI: " + ex.Message);                
+                Console.WriteLine("UPNP exception: " + ((OpenSource.UPnP.UPnPInvokeException)ex).UPNP.ErrorDescription);
+                MessageBox.Show(((OpenSource.UPnP.UPnPInvokeException)ex).UPNP.ErrorDescription, ex.Message,MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
             }
         }
 
-        public void Playback() {
-            SetAVTransportURI();
-            Play();
+        public bool Playback() {
+            if (SetAVTransportURI())
+                return Play();
+            else
+                return false;
         }
     }
 }

@@ -32,8 +32,18 @@ namespace LocalAudioBroadcast {
             lab = new LocalAudioBroadcast();
             lab.ControlPoint.OnAddedDevice += ControlPoint_OnAddedDevice;
             lab.ControlPoint.OnRemovedDevice += ControlPoint_OnRemovedDevice;
+            lab.FileServer.ServerSocketClosed += FileServer_ServerSocketClosed;
         }
 
+        private void FileServer_ServerSocketClosed(object sender, EventArgs e)
+        {
+            if (btnPlay.ImageIndex == 1)
+            {
+                Console.WriteLine("Socket has been closed!");
+                if (InvokeRequired) { Invoke((MethodInvoker)(() => this.btnPlay_Click(null, null)));}
+                MessageBox.Show("The connection has been closed while playing!", "Socket has been closed!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
         private void MainForm_Shown(Object sender, EventArgs e) {
             // start after the form has loaded, else the BeginInvoke methods in the event handlers 
             // won't be executed in cases where a device is found before the form is loaded
@@ -92,6 +102,7 @@ namespace LocalAudioBroadcast {
                     lab.ControlPoint.EventHandler.OnVolumeChanged -= EventHandler_OnVolumeChanged;
                     lab.ControlPoint.EventHandler.OnMuteChanged -= EventHandler_OnMuteChanged;
                     lab.ControlPoint.EventHandler.OnPlaybackChanged -= EventHandler_OnPlaybackChanged;
+                    lab.FileServer.ServerSocketClosed -= FileServer_ServerSocketClosed;
                 }
 
                 // set new device
@@ -101,7 +112,7 @@ namespace LocalAudioBroadcast {
                 lab.ControlPoint.EventHandler.OnVolumeChanged += EventHandler_OnVolumeChanged;
                 lab.ControlPoint.EventHandler.OnMuteChanged += EventHandler_OnMuteChanged;
                 lab.ControlPoint.EventHandler.OnPlaybackChanged += EventHandler_OnPlaybackChanged;
-
+                lab.FileServer.ServerSocketClosed += FileServer_ServerSocketClosed;
                 // update ui
                 tbVolume.Value = lab.ControlPoint.GetVolume();
                 // explicitely call then handler to update the volume button icon index (volumeIconIndex), 
@@ -133,12 +144,16 @@ namespace LocalAudioBroadcast {
 
         private void btnPlay_Click(object sender, EventArgs e) {
             if (btnPlay.ImageIndex == 0) {
-                lab.ControlPoint.Playback();
-                btnPlay.ImageIndex = 1;
+                if (lab.ControlPoint.Playback())
+                {
+                    btnPlay.ImageIndex = 1;
+                    rbFormatLPCM.Enabled = rbFormatPCM.Enabled = rbFormatWAV.Enabled = cbRenderers.Enabled = false;
+                }
             }
             else {
                 lab.ControlPoint.Stop();
                 btnPlay.ImageIndex = 0;
+                rbFormatLPCM.Enabled = rbFormatPCM.Enabled = rbFormatWAV.Enabled = cbRenderers.Enabled = true;
             }
         }
 

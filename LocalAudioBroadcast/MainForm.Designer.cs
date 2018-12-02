@@ -165,8 +165,8 @@
             this.rbFormatPCM.TabStop = true;
             this.rbFormatPCM.Tag = "pcm";
             this.rbFormatPCM.Text = "WAV/PCM";
-            this.toolTip1.SetToolTip(this.rbFormatPCM, "Use if LPCM is not supported by the target renderer. Can only stream for a limite" +
-        "d time, due to the length restriction of the wav header.");
+            this.toolTip1.SetToolTip(this.rbFormatPCM, "This is a workaround for LinTech WLAN receiver  - with \'x-wav\' in the http-get pr" +
+        "otocol and \'l16\' in the other headers");
             this.rbFormatPCM.UseVisualStyleBackColor = true;
             this.rbFormatPCM.CheckedChanged += new System.EventHandler(this.rbFormat_CheckedChanged);
             // 
@@ -203,7 +203,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(308, 145);
+            this.ClientSize = new System.Drawing.Size(308, 138);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnAbout);
             this.Controls.Add(this.controlPanel);
