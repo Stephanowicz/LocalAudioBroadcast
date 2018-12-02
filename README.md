@@ -1,3 +1,7 @@
+This is a fork of [protyposis Local Audio Broadcast](https://github.com/protyposis/LocalAudioBroadcast).
+I needed a workaround for my AirLino-1445. By examining why the software didn't work with it, I also made some minor bugfixes and extensions to the prog. Maybe I'll continue with adding stuff here, maybe not :D - will see...
+Cheers
+
 Local Audio Broadcast
 =====================
 
