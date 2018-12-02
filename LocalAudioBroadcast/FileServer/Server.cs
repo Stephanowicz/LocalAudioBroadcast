@@ -21,9 +21,14 @@ namespace LocalAudioBroadcast.FileServer {
 
         private HttpServer.HttpServer httpServer;
         private List<ServerModule> httpModules;
-
+        public event EventHandler ServerSocketClosed;
         public Server() {
             httpModules = new List<ServerModule>();
+        }
+
+        protected virtual void OnSocketClosed(EventArgs e)
+        {
+            ServerSocketClosed?.Invoke(this, e);
         }
 
         public void Add(ServerModule module) {
@@ -36,13 +41,18 @@ namespace LocalAudioBroadcast.FileServer {
             httpServer = new HttpServer.HttpServer();
             httpServer.Start(ipEndPoint.Address, ipEndPoint.Port);
 
-            httpModules.ForEach(module => { module.Start(); httpServer.Add(module); });
+            httpModules.ForEach(module => { module.Start(); httpServer.Add(module); ((LoopbackModule)module).socketClosed += Server_socketClosed; });
 
             Console.WriteLine("HTTP server STARTED listening @ " + ipEndPoint);
         }
 
+        private void Server_socketClosed(object sender, EventArgs e)
+        {
+            OnSocketClosed(EventArgs.Empty);
+        }
+
         public void Stop() {
-            httpModules.ForEach(module => module.Stop());
+            httpModules.ForEach(module => { module.Stop(); ((LoopbackModule)module).socketClosed -= Server_socketClosed; });
             httpServer.Stop();
             Console.WriteLine("HTTP server STOPPED");
         }

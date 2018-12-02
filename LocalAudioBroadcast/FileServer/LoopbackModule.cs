@@ -28,9 +28,18 @@ namespace LocalAudioBroadcast.FileServer
     class LoopbackModule : ServerModule {
 
         private const int BUFFER_SIZE = 8192 * 128;
-
+        public event EventHandler socketClosed;
         private Dictionary<CaptureDevice, CaptureDeviceHandler> captureDevices;
         private ITrackInfoProvider trackInfoProvider;
+
+        protected virtual void OnSocketClosed(EventArgs e)
+        {
+            EventHandler handler = socketClosed;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
 
         public override void Start() {
             captureDevices = new Dictionary<CaptureDevice, CaptureDeviceHandler>();
@@ -161,6 +170,8 @@ namespace LocalAudioBroadcast.FileServer
                     (double)captureDevice.loopbackCapture.WaveFormat.AverageBytesPerSecond);
             }
 
+            OnSocketClosed(EventArgs.Empty);
+
             if (trackInfoHandler != null) {
                 trackInfoProvider.TrackInfoChanged -= trackInfoHandler;
             }
@@ -172,7 +183,6 @@ namespace LocalAudioBroadcast.FileServer
 
             return true;
         }
-
         private class CaptureDeviceHandler {
             public object lockObject = new object();
             public WasapiLoopbackCapture2 loopbackCapture;
